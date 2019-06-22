@@ -7,7 +7,8 @@ class Logger {
     console.log(`${timestamp} - ${message}`);
   }
 
-  error(message) {
+  error(error) {
+    const message = error.stack || error;
     const timestamp = new Date().toISOString();
     // eslint-disable-next-line no-console
     console.error(`${timestamp} - ${message}`);
