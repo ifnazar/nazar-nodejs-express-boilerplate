@@ -1,26 +1,18 @@
-class CA {
-  async method1() {
-    throw new Error('FOO');
-  }
+import app from './server';
+import { logger } from './utils/logger';
+import { parserNumber } from './utils/parse-utils';
+
+function main() {
+  const port = parserNumber(process.env.PORT || '3000');
+
+  // Start the server
+  app.listen(port, () => {
+    logger.info(`Listening on port ${port}`);
+  });
 }
 
-class C2 {
-  async method2() {
-    await new CA().method1();
-  }
+try {
+  main();
+} catch (error) {
+  logger.error(error);
 }
-
-class C3 {
-  async method3() {
-    await new C2().method2();
-  }
-}
-
-async function main() {
-  await new C3().method3();
-}
-
-main().catch((error) => {
-  // eslint-disable-next-line no-console
-  console.error(error.stack || JSON.stringify(error, 2, 2));
-});
