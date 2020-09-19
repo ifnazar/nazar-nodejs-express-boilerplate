@@ -15,6 +15,7 @@ app.get('/', statusHandler);
 
 // Error handler
 app.use(serverConfig.logErrors);
+app.use(serverConfig.clientErrorHandler);
 app.use(serverConfig.errorHandler);
 
 export default app;

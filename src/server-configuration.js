@@ -1,4 +1,6 @@
 import helmet from 'helmet';
+import noCache from 'nocache';
+
 import { logger } from './utils/logger';
 
 /**
@@ -6,20 +8,28 @@ import { logger } from './utils/logger';
  */
 export function security(app) {
   app.use(helmet());
-  app.use(helmet.noCache());
+  app.use(noCache());
 }
 
-export function errorHandler(err, req, res) {
-  const custom = new Error();
-  custom.message = err.message;
-  custom.status = 400;
+export function errorHandler(err, req, res, next) {
+  if (!err) {
+    res.status(500);
+    res.render('error', { error: err });
+  }
+  next();
+}
 
-  res.status(400).json(custom);
+export function clientErrorHandler(err, req, res, next) {
+  if (req.xhr) {
+    res.status(500).send({ error: 'Something failed!' });
+  } else {
+    next(err);
+  }
 }
 
 export function logErrors(err, req, res, next) {
-  if (!err.notLog) {
-    logger.error(err);
+  if (!err) {
+    logger.error(err.stack);
   }
   next(err);
 }
